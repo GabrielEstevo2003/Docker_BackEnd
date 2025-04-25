@@ -1,0 +1,45 @@
+services:
+  mongo:
+    image: mongo
+    container_name: mongo-container
+    ports:
+      - "27017:27017"
+    networks:
+      - rede
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: dbdocker
+    ports:
+      - "3307:3306"
+    networks:
+      - rede
+
+  api-mongo:
+    build:
+      context: ./apiMongo
+    container_name: api-mongo
+    ports:
+      - "8090:8090"
+    depends_on:
+      - mongo
+    networks:
+      - rede
+
+  api-mysql:
+    build:
+      context: ./apiMySQL
+    container_name: api-mysql
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    networks:
+      - rede
+
+networks:
+  rede:
+    driver: bridge
